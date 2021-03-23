@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>{{title}}</title>
+</head>
+<body>
+<header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-body border-bottom shadow-sm cc_cursor">
+    <p class="h5 my-0 me-md-auto fw-normal">Сеть магазинов "Семёрочка"</p>
+    <nav class="my-2 my-md-0 me-md-3">
+        <a class="p-2 text-dark" href="/catalog">Каталог</a>
+        <a class="p-2 text-dark cc_pointer" href="/goodstobuy">Корзина</a>
+        <a class="p-2 text-dark" href="/about">О нас</a>
+    </nav>
+    {% if current_user.is_authenticated %}
+    <p>
+        <h4>{{current_user.name}}</h4>
+        <a class="btn btn-outline-primary" href="/logout">Выйти</a>
+    </p>
+    {% else %}
+    <p>
+        <a class="btn btn-outline-primary" href="/login">Войти</a>
+        <a class="btn btn-outline-primary" href="/register">Зарегистрироваться</a>
+    </p>
+    {% endif %}
+</header>
+<!-- Begin page content -->
+<main role="main" class="container">
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md6 border rounded">
+    <h2>{{item.name}}</h2>
+
+    <h3>{{item.price}}</h3>
+
+    <img src={{item.picture}} alt="здесь должна была быть картинка, но не нашлась">
+    <div>
+        Рейтинг - {{item.rating}}, Кол-во - {{item.amount}}
+    </div>
+    <form class="login_form" method="post">
+        {% if current_user.is_authenticated %}
+        <div class="form-group">
+            <label for="classSelect">Кол-во</label>
+            <select class="form-control" id="classSelect" name="amount">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+        {% else %}
+        <h4>Авторизуйтесь, чтобы добавть товар в корзину</h4>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
