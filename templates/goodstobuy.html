@@ -1,5 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3>{{price}}</h3>
+<h2>Общая цена - {{price}} руб</h2>
+{% for item in goods%}
+<div class="col-md6 border rounded">
+    <h2>{{item.good.name}}</h2>
+
+    <h3>{{item.good.price}}</h3>
+
+    <img src={{item.good.picture}} alt="здесь должна была быть картинка, но не нашлась">
+    <div>
+        Кол-во - {{item.amount}}
+    </div>
+</div>
+{% endfor %}
+<form class="login_form" method="post">
+    <button type="submit" class="btn btn-primary">Очистить корзину</button>
+</form>
+<a class="p-2 text-dark cc_pointer" href="/pay/">Заказать</a>
 {% endblock %}

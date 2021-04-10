@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="form-group">
+        <label for="classSelect">Адрес</label>
+        <textarea class="form-control" id="about" rows="2" name="about"></textarea>
+        <label for="classSelect">Тип доставки</label>
+        <select class="form-control" id="classSelect" name="amount">
+            <option>Почтовая сова</option>
+            <option>Стандартная</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Заказать</button>
+    </div>
+{% endblock %}

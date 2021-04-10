@@ -23,10 +23,17 @@ def not_found(_):
 def index():
     return render_template('index.html', title='Главная страница')
 
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
+
+
+@app.route("/pay")
+def pay():
+    return render_template('buy.html')
+
 
 @app.route("/catalog")
 def catalog():
@@ -34,22 +41,41 @@ def catalog():
     goods = db_sess.query(Good).filter(Good.amount > 0)
     return render_template('catalog.html', goods=goods, title='Каталог')
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect("/")
 
-@app.route('/goodstobuy')
+
+@app.route('/goodstobuy', methods=['POST', 'GET'])
 @login_required
 def goodtobuy():
     db_sess = db_session.create_session()
     goods = db_sess.query(Goodstobuy).filter(Goodstobuy.name_customer == current_user.name)
     sm = 0
-    print(goods)
+    if request.method == 'POST':
+        for el in goods:
+            db_sess.delete(el)
+        db_sess.commit()
+        goods = []
     for el in goods:
         sm += el.good.price * el.amount
-    return render_template('goodstobuy.html', price=sm)
+    return render_template('goodstobuy.html', price=sm, goods=goods)
+
+
+@app.route("/catalog/<name>/<rate>", methods=['GET'])
+def rate(name, rate):
+    rate = int(rate)
+    if 0 <= rate <= 5:
+        db_sess = db_session.create_session()
+        new_good = db_sess.query(Good).filter(Good.name == name).first()
+        new_good.rating = (new_good.rating * new_good.count_rating + rate) / (new_good.count_rating + 1)
+        new_good.count_rating += 1
+        db_sess.commit()
+    return render_template('rating.html')
+
 
 @app.route("/catalog/<name>", methods=['POST', 'GET'])
 def good(name):
@@ -59,7 +85,7 @@ def good(name):
     if request.method == 'POST':
         db_sess = db_session.create_session()
         goods_del = db_sess.query(Goodstobuy).filter(Goodstobuy.name_good == name,
-                                                      Goodstobuy.name_customer == current_user.name).first()
+                                                     Goodstobuy.name_customer == current_user.name).first()
         if goods_del:
             db_sess.delete(goods_del)
             db_sess.commit()
@@ -68,6 +94,7 @@ def good(name):
         db_sess.commit()
 
     return render_template('good.html', item=goods[0], title=name)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
