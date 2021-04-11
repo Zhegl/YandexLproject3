@@ -1,13 +1,9 @@
 {% extends "base.html" %}
+
 {% block content %}
-    <div class="form-group">
-        <label for="classSelect">Адрес</label>
-        <textarea class="form-control" id="about" rows="2" name="about"></textarea>
-        <label for="classSelect">Тип доставки</label>
-        <select class="form-control" id="classSelect" name="amount">
-            <option>Почтовая сова</option>
-            <option>Стандартная</option>
-        </select>
+    <h1>Это ваш адрес?</h1>
+    <img src={{name}} alt="здесь должна была быть картинка, но не нашлась">
+    <form class="login_form" method="post">
         <button type="submit" class="btn btn-primary">Заказать</button>
-    </div>
+    </form>
 {% endblock %}

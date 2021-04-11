@@ -1,4 +1,4 @@
-from flask import Flask, make_response, jsonify, render_template, request
+from flask import Flask, make_response, jsonify, render_template, request, url_for
 from werkzeug.utils import redirect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from data import db_session
@@ -7,6 +7,7 @@ from data.goodtobuy import Goodstobuy
 from data.loginform import LoginForm
 from data.user import RegisterForm
 from data.users import User
+from data.address import create
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -30,9 +31,14 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route("/pay")
+@app.route("/pay", methods=['POST', 'GET'])
+@login_required
 def pay():
-    return render_template('buy.html')
+    if request.method == 'GET':
+        create(current_user)
+        return render_template('buy.html', name='static/img/' + current_user.name + '.png')
+    elif request.method == 'POST':
+        return render_template('buy.html')
 
 
 @app.route("/catalog")
