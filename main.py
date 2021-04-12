@@ -8,6 +8,7 @@ from data.loginform import LoginForm
 from data.user import RegisterForm
 from data.users import User
 from data.address import create
+from data.operationswithgoodstobuy import clear, getprice, checkdiscount
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -31,28 +32,37 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
+@app.route("/promo", methods=['POST', 'GET'])
+@login_required
+def promo():
+    if request.method == 'GET':
+        return render_template('promo.html', discount=current_user.discount)
+    elif request.method == 'POST':
+        checkdiscount(current_user, request.form['promo'])
+        return redirect("/promo")
+
 @app.route("/pay", methods=['POST', 'GET'])
 @login_required
 def pay():
     create(current_user)
     return render_template('buy.html', name='static/img/' + current_user.name + '.png')
 
+
 @app.route('/afterpay')
 def afterpay():
     return 'Спасибо за оформление заказа!'
+
 
 @app.route("/choose", methods=['POST', 'GET'])
 @login_required
 def choose():
     db_sess = db_session.create_session()
     goods = db_sess.query(Goodstobuy).filter(Goodstobuy.name_customer == current_user.name)
-    sm = 0
-    for el in goods:
-        sm += el.good.price * el.amount
-    if request.method == 'GET':
-        return render_template('choose.html', price=sm)
-    elif request.method == 'POST':
 
+    if request.method == 'GET':
+        return render_template('choose.html', price=getprice(current_user))
+    elif request.method == 'POST':
+        checkdiscount(current_user, '-1')
         print('----------Новый заказ----------')
         print('Пользоватьель', current_user.name, 'на адрес', current_user.about)
         for el in goods:
@@ -61,6 +71,7 @@ def choose():
         print('Тип доставки:', request.form['delivery'])
         print('Комментарии к доставке:', request.form['about'])
         print('-------------------------------')
+        clear(current_user.name)
         return redirect("/afterpay")
 
 
@@ -93,18 +104,13 @@ def logout():
 
 @app.route('/goodstobuy', methods=['POST', 'GET'])
 @login_required
-def goodtobuy():
+def goodstobuy():
     db_sess = db_session.create_session()
     goods = db_sess.query(Goodstobuy).filter(Goodstobuy.name_customer == current_user.name)
-    sm = 0
     if request.method == 'POST':
-        for el in goods:
-            db_sess.delete(el)
-        db_sess.commit()
+        clear(current_user.name)
         goods = []
-    for el in goods:
-        sm += el.good.price * el.amount
-    return render_template('goodstobuy.html', price=sm, goods=goods)
+    return render_template('goodstobuy.html', price=getprice(current_user), goods=goods)
 
 
 @app.route("/catalog/<name>/<rate>", methods=['GET'])
