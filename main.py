@@ -52,6 +52,9 @@ def pay():
 def afterpay():
     return 'Спасибо за оформление заказа!'
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route("/choose", methods=['POST', 'GET'])
 @login_required
@@ -68,10 +71,12 @@ def choose():
         for el in goods:
             el.good.amount -= el.amount
             print(el.good.name, 'кол-во:', el.amount)
+        db_sess.commit()
         print('Тип доставки:', request.form['delivery'])
         print('Комментарии к доставке:', request.form['about'])
         print('-------------------------------')
         clear(current_user.name)
+
         return redirect("/afterpay")
 
 

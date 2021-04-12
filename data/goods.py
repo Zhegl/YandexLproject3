@@ -13,4 +13,5 @@ class Good(SqlAlchemyBase):
     count_rating = sqlalchemy.Column(sqlalchemy.Integer)
     amount = sqlalchemy.Column(sqlalchemy.Integer)
     picture = sqlalchemy.Column(sqlalchemy.String)
+    about = sqlalchemy.Column(sqlalchemy.String)
     goodstobuy = orm.relation("Goodstobuy", back_populates='good')

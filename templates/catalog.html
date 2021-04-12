@@ -6,13 +6,13 @@
 <div class="col-md6 border rounded">
     <h2>{{item.name}}</h2>
 
-    <h3>{{item.price}}</h3>
+    <h3>{{item.price}} руб</h3>
 
     <img src={{item.picture}} alt="здесь должна была быть картинка, но не нашлась">
     <div>
         Рейтинг - {{item.rating}}, Кол-во - {{item.amount}}
     </div>
-    <a class="p-2 text-dark cc_pointer" href="{{'/catalog/' + item.name}}">Подробнее</a>
+    <a class="btn btn-outline-primary" href="{{'/catalog/' + item.name}}">Подробнее</a>
 </div>
 {% endfor %}
 {% endblock %}

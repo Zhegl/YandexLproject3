@@ -4,9 +4,10 @@
 <div class="col-md6 border rounded">
     <h2>{{item.name}}</h2>
 
-    <h3>{{item.price}}</h3>
+    <h3>Цена - {{item.price}} руб</h3>
 
     <img src={{item.picture}} alt="здесь должна была быть картинка, но не нашлась">
+    <h4>{{item.about}}</h4>
     <div>
         Рейтинг - {{item.rating}}, Кол-во - {{item.amount}}
     </div>
@@ -28,7 +29,9 @@
         <a class="p-2 text-dark cc_pointer" href="/catalog/{{item.name}}/3">3</a>
         <a class="p-2 text-dark cc_pointer" href="/catalog/{{item.name}}/4">4</a>
         <a class="p-2 text-dark cc_pointer" href="/catalog/{{item.name}}/5">5</a>
-        <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+        <div>
+            <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+        </div>
         {% else %}
         <h4>Авторизуйтесь, чтобы добавть товар в корзину</h4>
         {% endif %}
