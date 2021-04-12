@@ -34,11 +34,34 @@ def load_user(user_id):
 @app.route("/pay", methods=['POST', 'GET'])
 @login_required
 def pay():
+    create(current_user)
+    return render_template('buy.html', name='static/img/' + current_user.name + '.png')
+
+@app.route('/afterpay')
+def afterpay():
+    return 'Спасибо за оформление заказа!'
+
+@app.route("/choose", methods=['POST', 'GET'])
+@login_required
+def choose():
+    db_sess = db_session.create_session()
+    goods = db_sess.query(Goodstobuy).filter(Goodstobuy.name_customer == current_user.name)
+    sm = 0
+    for el in goods:
+        sm += el.good.price * el.amount
     if request.method == 'GET':
-        create(current_user)
-        return render_template('buy.html', name='static/img/' + current_user.name + '.png')
+        return render_template('choose.html', price=sm)
     elif request.method == 'POST':
-        return render_template('buy.html')
+
+        print('----------Новый заказ----------')
+        print('Пользоватьель', current_user.name, 'на адрес', current_user.about)
+        for el in goods:
+            el.good.amount -= el.amount
+            print(el.good.name, 'кол-во:', el.amount)
+        print('Тип доставки:', request.form['delivery'])
+        print('Комментарии к доставке:', request.form['about'])
+        print('-------------------------------')
+        return redirect("/afterpay")
 
 
 @app.route("/catalog")
@@ -46,6 +69,19 @@ def catalog():
     db_sess = db_session.create_session()
     goods = db_sess.query(Good).filter(Good.amount > 0)
     return render_template('catalog.html', goods=goods, title='Каталог')
+
+
+@app.route('/edit', methods=['POST', 'GET'])
+@login_required
+def edit():
+    if request.method == 'GET':
+        return render_template('edit.html')
+    elif request.method == 'POST':
+        db_sess = db_session.create_session()
+        toedit = db_sess.query(User).filter(User.name == current_user.name).first()
+        toedit.about = request.form['about']
+        db_sess.commit()
+        return redirect("/pay")
 
 
 @app.route('/logout')
