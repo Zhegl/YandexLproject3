@@ -1,4 +1,6 @@
 import requests as req
+
+
 def create(name):
     geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=" + name.about + "&format=json"
 
@@ -15,7 +17,7 @@ def create(name):
         toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
         # Координаты центра топонима:
         toponym_coodrinates = toponym["Point"]["pos"]
-        map_request = "https://static-maps.yandex.ru/1.x/?l=map&pt=" + ','.join(toponym_coodrinates.split())
+        map_request = "https://static-maps.yandex.ru/1.x/?l=map&pt=" + ','.join(toponym_coodrinates.split()) + '&z=15'
         response = req.get(map_request)
 
         if not response:

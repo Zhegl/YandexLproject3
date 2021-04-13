@@ -41,6 +41,7 @@ def promo():
         checkdiscount(current_user, request.form['promo'])
         return redirect("/promo")
 
+
 @app.route("/pay", methods=['POST', 'GET'])
 @login_required
 def pay():
@@ -50,11 +51,13 @@ def pay():
 
 @app.route('/afterpay')
 def afterpay():
-    return 'Спасибо за оформление заказа!'
+    return render_template('afterpay.html')
+
 
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 @app.route("/choose", methods=['POST', 'GET'])
 @login_required
