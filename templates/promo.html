@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Ваша скидка - {{discount}}%</h1>
-    <form class="login_form" method="post">
-        <div class="form-group">
-            <label for="about">Введите промокод:</label>
-            <textarea class="form-control" id="about" rows="3" name="promo"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Отправить</button>
-    </form>
+{% block content %}.
+{% if current_user.is_authenticated %}
+<h1>Ваша скидка - {{current_user.discount}}%</h1>
+<form class="login_form" method="post">
+    <div class="form-group">
+        <label for="about">Введите промокод:</label>
+        <textarea class="form-control" id="about" rows="3" name="promo"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
+{% else %}
+<h3>Авторизуйтесь, чтобы использовать промокоды</h3>
+<a class="btn btn-outline-primary" href="/">Назад</a>
+{% endif %}
 
 {% endblock %}

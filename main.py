@@ -33,10 +33,9 @@ def load_user(user_id):
 
 
 @app.route("/promo", methods=['POST', 'GET'])
-@login_required
 def promo():
     if request.method == 'GET':
-        return render_template('promo.html', discount=current_user.discount)
+        return render_template('promo.html', current_user=current_user)
     elif request.method == 'POST':
         checkdiscount(current_user, request.form['promo'])
         return redirect("/promo")
@@ -216,7 +215,12 @@ def reqister():
 
 def main():
     db_session.global_init("db/goods.db")
+    # db_sess = db_session.create_session()
+    # a = db_sess.query(Goodstobuy).filter()
+    # db_sess.delete(a)
+    # db_sess.commit()
     app.run()
+
 
 
 if __name__ == '__main__':
