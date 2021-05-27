@@ -53,6 +53,14 @@ def pay():
 def afterpay():
     return render_template('afterpay.html')
 
+@app.route('/admin')
+@login_required
+def admin():
+    if current_user.name == "admin":
+        return render_template('admin.html', data=open("order.txt", "rt").readlines())
+    else:
+        return make_response(jsonify({'error': 'Forbidden'}), 403)
+
 
 @app.route('/about')
 def about():
@@ -74,11 +82,21 @@ def choose():
         for el in goods:
             el.good.amount -= el.amount
             print(el.good.name, 'кол-во:', el.amount)
-        db_sess.commit()
         print('Тип доставки:', request.form['delivery'])
         print('Комментарии к доставке:', request.form['about'])
         print('-------------------------------')
+        with open("order.txt", "a") as f:
+            print('----------Новый заказ----------', file=f)
+            print('Пользоватьель', current_user.name, 'на адрес', current_user.about, file=f)
+            for el in goods:
+                el.good.amount -= el.amount
+                print(el.good.name, 'кол-во:', el.amount, file=f)
+            print('Тип доставки:', request.form['delivery'], file=f)
+            print('Комментарии к доставке:', request.form['about'], file=f)
+            print('-------------------------------', file=f)
+        db_sess.commit()
         clear(current_user.name)
+
 
         return redirect("/afterpay")
 
@@ -180,6 +198,10 @@ def reqister():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
+        if db_sess.query(User).filter(User.name == form.name.data).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Такой пользователь уже есть")
         user = User(
             name=form.name.data,
             email=form.email.data,
@@ -199,3 +221,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
