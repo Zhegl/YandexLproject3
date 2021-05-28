@@ -52,6 +52,7 @@ def pay():
 def afterpay():
     return render_template('afterpay.html')
 
+
 @app.route('/admin')
 @login_required
 def admin():
@@ -96,7 +97,6 @@ def choose():
         db_sess.commit()
         clear(current_user.name)
 
-
         return redirect("/afterpay")
 
 
@@ -104,7 +104,15 @@ def choose():
 def catalog():
     db_sess = db_session.create_session()
     goods = db_sess.query(Good).filter(Good.amount > 0)
-    return render_template('catalog.html', goods=goods, title='Каталог')
+    return render_template('catalog.html', goods=goods, title='Каталог', message="")
+
+
+@app.route("/catalog2")
+def catalog2():
+    db_sess = db_session.create_session()
+    goods = db_sess.query(Good).filter(Good.amount > 0)
+    return render_template('catalog.html', goods=goods, title='Каталог', message="О нет, это же семёрочка, здесь"
+                                                                                 " семь товаров")
 
 
 @app.route('/edit', methods=['POST', 'GET'])
@@ -216,14 +224,11 @@ def reqister():
 def main():
     db_session.global_init("db/goods.db")
     # db_sess = db_session.create_session()
-    # a = db_sess.query(Goodstobuy).filter()
-    # db_sess.delete(a)
+    # a = db_sess.query(User).filter()
+    # db_sess.delete(a[0])
     # db_sess.commit()
     app.run()
 
 
-
 if __name__ == '__main__':
     main()
-
-
